@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import { history, useModel } from 'umi';
 import styles from './index.less';
 
-const LoginMessage: React.FC<{
+const Message: React.FC<{
   content: string;
 }> = ({ content }) => (
   <Alert
@@ -27,7 +27,7 @@ const LoginMessage: React.FC<{
   />
 );
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -48,7 +48,7 @@ const Login: React.FC = () => {
         ...values,
         type,
       });
-      if (msg.message === 'ok') {
+      if (msg.status === 'ok') {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -94,7 +94,7 @@ const Login: React.FC = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="userAccount"
+                name="username"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
@@ -108,7 +108,7 @@ const Login: React.FC = () => {
                 ]}
               />
               <ProFormText.Password
-                name="userPassword"
+                name="password"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
