@@ -1,17 +1,11 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import {
-  LockOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-components';
-import { Alert, message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import { history, useModel } from 'umi';
+import {login} from '@/services/ant-design-pro/api';
+import {LockOutlined, UserOutlined,} from '@ant-design/icons';
+import {LoginForm, ProFormCheckbox, ProFormText,} from '@ant-design/pro-components';
+import {Alert, message, Tabs} from 'antd';
+import React, {useState} from 'react';
+// @ts-ignore
+import {history, Link, useModel} from 'umi';
 import styles from './index.less';
 
 const LoginMessage: React.FC<{
@@ -31,6 +25,7 @@ const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
+
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
@@ -40,6 +35,7 @@ const Login: React.FC = () => {
       }));
     }
   };
+
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
@@ -48,7 +44,8 @@ const Login: React.FC = () => {
         ...values,
         type,
       });
-      if (msg.message === 'ok') {
+      // @ts-ignore
+      if (msg.data) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -63,13 +60,17 @@ const Login: React.FC = () => {
       }
       console.log(msg);
       // 如果失败去设置用户错误信息
+      // @ts-ignore
+      message.error("用户名或密码错误");
       setUserLoginState(msg);
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
       message.error(defaultLoginFailureMessage);
     }
   };
+
   const { status, type: loginType } = userLoginState;
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -136,13 +137,9 @@ const Login: React.FC = () => {
             <ProFormCheckbox noStyle name="autoLogin">
               自动登录
             </ProFormCheckbox>
-            <a
-              style={{
-                float: 'right',
-              }}
-            >
-              忘记密码 ?
-            </a>
+            <Link style={{
+              float: 'right',
+            }} to="/user/register">新用户注册</Link>
           </div>
         </LoginForm>
       </div>

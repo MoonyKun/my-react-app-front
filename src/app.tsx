@@ -11,13 +11,15 @@ import { RequestConfig } from 'umi';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+/*
+* 无需用户登录态的页面
+* */
+const NO_NEED_LOGIN_WHITE_LIST = ['/user/register', loginPath];
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
   loading: <PageLoading />,
 };
-
-
 export const request: RequestConfig = {
   timeout: 10000,
   errorConfig: {},
@@ -43,6 +45,7 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
+
   // 如果不是登录页面，执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
@@ -64,16 +67,22 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.userAccount,
     },
     footerRender: () => <Footer />,
+
     onPageChange: () => {
       const { location } = history;
+      if (NO_NEED_LOGIN_WHITE_LIST.includes(location.pathname)) {
+        return;
+      }
+
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },
+
     links: isDev
       ? [
           <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
