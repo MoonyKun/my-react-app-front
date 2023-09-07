@@ -54,7 +54,7 @@ const columns: ProColumns<API.CurrentUser>[] = [
     dataIndex: 'userStatus',
   },
   {
-    title: '星球编号',
+    title: '邀请码',
     dataIndex: 'planetCode',
   },
   {
